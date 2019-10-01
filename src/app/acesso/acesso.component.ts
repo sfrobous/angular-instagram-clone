@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 
 @Component({
   selector: 'app-acesso',
@@ -25,9 +25,9 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
       transition('void => criado', [
         style({
           opacity: 0,
-          transform: 'translate(50px, 0)'
+          transform: 'translate(100px, 0)'
         }),
-        animate('500ms 0ms ease-in-out')
+        animate('500ms 0ms')
       ])
     ])
   ]
@@ -35,7 +35,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 export class AcessoComponent implements OnInit {
   public estadoBanner: string = 'criado';
   public estadoPainel: string = 'criado';
-  public cadastro: boolean = false;
+  public cadastro: boolean = true;
   constructor() { }
 
   ngOnInit() {

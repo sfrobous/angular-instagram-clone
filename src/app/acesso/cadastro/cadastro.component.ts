@@ -1,4 +1,7 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+import { Usuario } from 'src/app/models/usuario.model';
+import { AutenticacaoService } from 'src/app/services/autenticacao.service';
 
 @Component({
   selector: 'app-cadastro',
@@ -7,7 +10,14 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 })
 export class CadastroComponent implements OnInit {
   @Output() exibirPainel: EventEmitter<string> = new EventEmitter();
-  constructor() { }
+  public formulario: FormGroup = new FormGroup({
+    'email': new FormControl(null),
+    'nome': new FormControl(null),
+    'login': new FormControl(null),
+    'senha': new FormControl(null),
+  });
+
+  constructor(private authService: AutenticacaoService) { }
 
   ngOnInit() {
   }
@@ -16,4 +26,12 @@ export class CadastroComponent implements OnInit {
     this.exibirPainel.emit('login');
   }
 
+  cadastrarUsuario(): void {
+    let usuario: Usuario = this.formulario.value;
+    
+    this.authService.cadastrarUsuario(usuario)
+      .subscribe((usuario: Usuario) => {
+        console.log(usuario);
+      });
+  }
 }
