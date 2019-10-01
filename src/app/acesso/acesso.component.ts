@@ -44,4 +44,8 @@ export class AcessoComponent implements OnInit {
   cadastreSe() {
     this.cadastro = true;
   }
+
+  exibirPainel(painel: string): void {
+    this.cadastro = painel === 'cadastro';
+  }
 }
