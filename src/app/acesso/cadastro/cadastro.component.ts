@@ -12,8 +12,8 @@ export class CadastroComponent implements OnInit {
   @Output() exibirPainel: EventEmitter<string> = new EventEmitter();
   public formulario: FormGroup = new FormGroup({
     'email': new FormControl(null),
+    'nome_completo': new FormControl(null),
     'nome': new FormControl(null),
-    'login': new FormControl(null),
     'senha': new FormControl(null),
   });
 
@@ -29,9 +29,8 @@ export class CadastroComponent implements OnInit {
   cadastrarUsuario(): void {
     let usuario: Usuario = this.formulario.value;
     
+    
     this.authService.cadastrarUsuario(usuario)
-      .subscribe((usuario: Usuario) => {
-        console.log(usuario);
-      });
+      .then(this.exibirPainelLogin);
   }
 }
