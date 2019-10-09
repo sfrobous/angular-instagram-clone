@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DbService } from '../../services/db.service';
+import { Observable, Subject, interval  } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { ProgressoService } from 'src/app/services/progresso.service';
 
 @Component({
 	selector: 'app-incluir-publicacao',
@@ -13,7 +16,11 @@ export class IncluirPublicacaoComponent implements OnInit {
 		'arquivo': new FormControl(null)
 	});
 	private file: File;
-	constructor(private dbService: DbService) { }
+	public progressoUpload: string = 'pendente';
+	public percentualProgresso: number = 0;
+	constructor(private dbService: DbService,
+				private progresso: ProgressoService) { }
+				
 
 	ngOnInit() {
 	}
@@ -23,6 +30,24 @@ export class IncluirPublicacaoComponent implements OnInit {
 		this.dbService.publicar({
 			titulo: this.formulario.value.titulo,
 			imagem: this.file
+		});
+
+		let continua = new Subject();
+
+		let acompanhamentoUpload = interval(250);
+		
+		acompanhamentoUpload
+			.pipe(takeUntil(continua))
+			.subscribe(() => {
+			console.log(this.progresso.estado);
+			this.progressoUpload = 'andamento';
+			
+			this.percentualProgresso =  Math.round((this.progresso.estado.bytesTransferred / this.progresso.estado.totalBytes) * 100);
+
+			if(this.progresso.status !== 'andamento'){
+				this.progressoUpload = 'concluido';
+				continua.next(false);
+			}
 		});
 	}
 
