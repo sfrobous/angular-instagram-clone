@@ -27,7 +27,6 @@ export class AutenticacaoService {
   }
 
   public cadastrarUsuario(usuario: Usuario) : Promise<any> {    
-    console.log(usuario);
     return firebase.auth().createUserWithEmailAndPassword(usuario.email, usuario.senha)
     .then((resposta: any) => {
       delete usuario.senha;

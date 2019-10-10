@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DbService } from '../../services/db.service';
 import { Observable, Subject, interval  } from 'rxjs';
@@ -11,6 +11,7 @@ import { ProgressoService } from 'src/app/services/progresso.service';
 	styleUrls: ['./incluir-publicacao.component.css']
 })
 export class IncluirPublicacaoComponent implements OnInit {
+	@Output() public onPostPublicado: EventEmitter<void> = new EventEmitter<void>();
 	private formulario: FormGroup = new FormGroup({
 		'titulo': new FormControl(null, [ Validators.required ]),
 		'arquivo': new FormControl(null)
@@ -39,14 +40,16 @@ export class IncluirPublicacaoComponent implements OnInit {
 		acompanhamentoUpload
 			.pipe(takeUntil(continua))
 			.subscribe(() => {
-			console.log(this.progresso.estado);
 			this.progressoUpload = 'andamento';
 			
-			this.percentualProgresso =  Math.round((this.progresso.estado.bytesTransferred / this.progresso.estado.totalBytes) * 100);
+			if(this.progresso.estado) {
+				this.percentualProgresso =  Math.round((this.progresso.estado.bytesTransferred / this.progresso.estado.totalBytes) * 100);
 
-			if(this.progresso.status !== 'andamento'){
-				this.progressoUpload = 'concluido';
-				continua.next(false);
+				if(this.progresso.status !== 'andamento'){
+					this.progressoUpload = 'concluido';					
+					continua.next(false);
+					this.onPostPublicado.emit();
+				}
 			}
 		});
 	}
